@@ -47,6 +47,7 @@ class walkCFG:
 
         self.def_var.append(block_def_var)
         self.instructions.append(block_instruction)
+        ## TODO: add guard instructions when walk through blocks
         for next_block in block.succ_block:
             self.walk(self.cfg.get_block(next_block))
         self.def_var.pop()
