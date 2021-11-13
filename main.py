@@ -56,8 +56,14 @@ def _get_lib_path():
 
 def test_python_lib():
 
+    debuginput = True
+
+    file = "/Users/mskhana/PycharmProjects/VeriDjPar/test.py"
     path = "/Users/mskhana/PycharmProjects/VeriDjPar/input/"
-    file_list = readfile(path)
+    if debuginput:
+        file_list = [file]
+    else:
+        file_list = readfile(path)
     start = time.time()
     # files = glob.glob(path)
     root_lists = []
@@ -86,14 +92,23 @@ def test_python_lib():
 if __name__ == '__main__':
     root = test_python_lib()
     walktree_ = walktree()
+
     for file_input in root:
         class_list, relation_list, global_funcs = walktree_.file_input(file_input)
         for classes in class_list:
             for func in classes.func:
-                print(func.name)
+                filename = classes.name+'.txt'
+                f = open(filename, 'w')
+                print('class name is ', classes.name, ', func name is ',func.name)
+                print('func has args: ', func.args)
+                print('printing CFG')
+                func.CFG.print_cfg()
+                print('printing md CFG')
                 func.CFG.print_cfg_md()
-                walkCFG_ = walkCFG(cfg=func.CFG, relations=relation_list, classes= class_list)
-                #walkCFG_.call_walk()
+                walkCFG_ = walkCFG(cfg=func.CFG, relations=relation_list, classes=class_list,
+                                   file=f, myclass=classes, function=func)
+                walkCFG_.call_walk()
+                f.close()
             print('\n')
 
 

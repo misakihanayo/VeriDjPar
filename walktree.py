@@ -168,6 +168,8 @@ class walktree:
                         except:
                             print('dumped')
                             traceback.print_exc()
+                    elif child.children[1].data == 'getattr':
+                        self.current_block.add_operation(child)
                     elif child.children[1].data == 'term':
                         self.current_block.add_operation(child)
                     elif child.children[1].data == 'list':
@@ -188,7 +190,7 @@ class walktree:
                     if child.children[0].data == 'funcdef':
                         self.func_def(child.children[0])
                 elif child.data == 'return_stmt':
-                    pass
+                    self.current_block.add_operation(child)
                     # if a function returned with no side effect and no branches, we link
                     # this function to the original call?
                 elif child.data == 'funccall':
@@ -359,7 +361,7 @@ class walktree:
                 self.current_func.args.append((var, argtype, init))
             elif child.data == 'typedparam':
                 var, argtype = self.analyze_typedparam(child)
-                self.current_func.args.append((var, argtype))
+                self.current_func.args.append((var, argtype, ''))
             elif child.data == 'starparams':
                 starparams = self.analyze_starparams(child)
                 for param in starparams:
@@ -378,13 +380,13 @@ class walktree:
                     elif child_.data == 'funcdef':
                         self.func_def(child_)
 
-        print('classes:')
-        for each_class in self.class_list:
-            print(each_class.name)
-            print(each_class.args)
-        print('relations:')
-        for relation in self.relation_list:
-            print(relation)
+#        print('classes:')
+#        for each_class in self.class_list:
+#             print(each_class.name)
+#             print(each_class.args)
+#         print('relations:')
+#         for relation in self.relation_list:
+#             print(relation)
 
         self.CFG.print_cfg()
         self.CFG.print_cfg_md()
